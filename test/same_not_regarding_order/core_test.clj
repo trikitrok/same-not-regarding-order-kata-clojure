@@ -19,18 +19,22 @@
       [elems (gen/let [v (gen/not-empty (gen/vector gen/int))
                        t (gen/tuple (gen/such-that #(> % 1) gen/s-pos-int) gen/int)]
                       (->> (apply repeat t)
-                           (concat v)
-                           shuffle))]
+                           (concat v)))]
       (fact "with duplicates"
         (sut/same-not-regarding-order? elems (shuffle elems)) => true)))
 
-  (for-all
-    [[elems1 elems2] (gen/list-distinct (gen/vector gen/int) {:num-elements 2})]
-    {:num-tests 1000}
-    (fact "when they are not"
-      (sut/same-not-regarding-order? elems1 elems2) => false))
+  (facts "when they are not"
+    (for-all
+      [[elems1 elems2] (gen/list-distinct (gen/vector-distinct gen/int) {:num-elements 2})]
+      {:num-tests 1000}
+      (fact "without duplicates"
+        (sut/same-not-regarding-order? elems1 elems2) => false))
 
-  (fact
-    "when they are not because of repeated elements"
-    (sut/same-not-regarding-order?
-      [1 2 3] [1 1 2 3]) => false))
+    (for-all
+      [elems (gen/let [v (gen/not-empty (gen/vector gen/int))
+                       t (gen/tuple (gen/such-that #(> % 1) gen/s-pos-int) gen/int)]
+                      (->> (apply repeat t)
+                           (concat v)))]
+      {:num-tests 1000}
+      (fact "with duplicates"
+        (sut/same-not-regarding-order? elems (distinct elems)) => false))))
