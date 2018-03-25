@@ -10,18 +10,9 @@
 
   (facts "when they are"
     (for-all
-      [elems (gen/vector-distinct gen/int)]
+      [elems (gen/vector gen/int)]
       {:num-tests 1000}
-      (fact "without duplicates"
-        (sut/same-not-regarding-order? elems (shuffle elems)) => true))
-
-    (for-all
-      [elems (gen/let [v (gen/not-empty (gen/vector gen/int))
-                       t (gen/tuple (gen/such-that #(> % 1) gen/s-pos-int) gen/int)]
-                      (->> (apply repeat t)
-                           (concat v)))]
-      (fact "with duplicates"
-        (sut/same-not-regarding-order? elems (shuffle elems)) => true)))
+      (sut/same-not-regarding-order? elems (shuffle elems)) => true))
 
   (facts "when they are not"
     (for-all
