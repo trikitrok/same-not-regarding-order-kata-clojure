@@ -11,7 +11,10 @@
   (fact
     "when they are not"
     (sut/same-not-regarding-order?
-      [1 2 3] [14]) => false)
+      [1 2 3] [14]) => false
+
+    (sut/same-not-regarding-order?
+      [1 2 3] [1 1 2 3]) => false)
 
   (for-all
     [elems (gen/vector gen/int)]
